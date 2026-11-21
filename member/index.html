@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="zh-CN" data-build="20261121232554">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>聆脑寻音 · 队员版</title>
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/base.css?v=20261121232554">
+<link rel="stylesheet" href="../assets/charts.css?v=20261121232554">
+<link rel="stylesheet" href="../assets/member.css?v=20261121232554">
+</head>
+<body class="member booting">
+
+<!-- 登录 -->
+<div class="login" id="login" hidden>
+  <div class="login-art" aria-hidden="true">
+    <canvas class="login-waves" data-waves="1.1" data-on-dark></canvas>
+    <svg viewBox="-1.3 -1.36 2.6 2.66" id="login-head"></svg>
+    <p>59 通道 · 每秒一次 · 左还是右</p>
+  </div>
+  <main class="login-panel">
+    <a class="brand" href="../">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="17" r="11" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M14 6.4 16 3.6l2 2.8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="11" cy="17" r="2.6" fill="var(--left)"/><circle cx="21" cy="17" r="2.6" fill="var(--right)"/></svg>
+      聆脑寻音
+    </a>
+    <h1>队员登录</h1>
+    <p class="login-intro">登录后可以看到完整的迭代记录、验证报告、论文稿和教学材料。</p>
+    <form id="login-form" novalidate>
+      <label class="field">
+        <span>用户名</span>
+        <input id="login-user" name="username" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" required>
+      </label>
+      <label class="field">
+        <span>密码</span>
+        <input id="login-pass" name="password" type="password" autocomplete="current-password" required>
+      </label>
+      <label class="check">
+        <input id="login-remember" type="checkbox">
+        <span>在这台设备上保持登录</span>
+      </label>
+      <p class="login-error" id="login-error" role="alert" hidden></p>
+      <button class="btn" id="login-submit" type="submit">登录</button>
+    </form>
+    <p class="login-foot">账号由项目负责人分发。内容在你的浏览器里解密，密码不会发到任何服务器。</p>
+    <p class="login-foot"><a href="../">← 返回公开版</a></p>
+  </main>
+</div>
+
+<!-- 登录后的工作台 -->
+<div class="app" id="app" hidden>
+  <header class="bar">
+    <button class="icon-btn menu-btn" id="menu-btn" type="button" aria-label="打开目录" aria-expanded="false" aria-controls="side">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </button>
+    <a class="brand" href="#/">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="17" r="11" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M14 6.4 16 3.6l2 2.8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="11" cy="17" r="2.6" fill="var(--left)"/><circle cx="21" cy="17" r="2.6" fill="var(--right)"/></svg>
+      聆脑寻音<span class="brand-tag">队员版</span>
+    </a>
+    <form class="search" id="search-form" role="search">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="9" cy="9" r="5.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="m13.2 13.2 3.6 3.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <input id="search-input" type="search" placeholder="搜索全部文档" aria-label="搜索全部文档" autocomplete="off">
+      <kbd>/</kbd>
+    </form>
+    <div class="bar-user">
+      <a class="bar-link" href="../">公开版</a>
+      <span class="user-name" id="user-name"></span>
+      <button class="btn ghost small" id="logout-btn" type="button">退出</button>
+    </div>
+  </header>
+  <div class="shell">
+    <nav class="side" id="side" aria-label="资料目录"></nav>
+    <div class="scrim" id="scrim" hidden></div>
+    <main class="view" id="view" tabindex="-1"></main>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+<noscript><p style="padding:40px;text-align:center">队员版需要启用 JavaScript 才能在浏览器里解密内容。</p></noscript>
+<script src="../assets/gl.js?v=20261121232554" defer></script>
+<script src="../assets/charts.js?v=20261121232554" defer></script>
+<script src="../assets/member.js?v=20261121232554" defer></script>
+</body>
+</html>

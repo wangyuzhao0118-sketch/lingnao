@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>聆脑寻音 · 轻量级脑电听觉注意检测</title>
+<meta name="description" content="安徽大学大学生创新训练计划项目：从 59 通道头皮脑电里，每秒判断一次你正在听左边还是右边的说话人。">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/base.css?v=20261121232554">
+<link rel="stylesheet" href="assets/charts.css?v=20261121232554">
+<link rel="stylesheet" href="assets/public.css?v=20261121232554">
+</head>
+<body>
+<a class="skip" href="#main">跳到正文</a>
+
+<header class="top">
+  <div class="wrap top-inner">
+    <a class="brand" href="#top" aria-label="聆脑寻音 首页">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="17" r="11" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M14 6.4 16 3.6l2 2.8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="11" cy="17" r="2.6" fill="var(--left)"/><circle cx="21" cy="17" r="2.6" fill="var(--right)"/></svg>
+      聆脑寻音
+    </a>
+    <nav class="top-nav" aria-label="页内导航">
+      <a href="#problem">问题</a>
+      <a href="#method">方法</a>
+      <a href="#work">研究内容</a>
+      <a href="#data">数据</a>
+      <a href="#practice">做法</a>
+    </nav>
+    <a class="btn ghost member-link" href="member/">队员入口</a>
+  </div>
+</header>
+
+<main id="main">
+  <div class="hero-band">
+  <canvas class="hero-waves" data-waves="1.25" aria-hidden="true"></canvas>
+  <span class="deco deco-1" aria-hidden="true"></span><span class="deco deco-2" aria-hidden="true"></span>
+  <span class="deco deco-3" aria-hidden="true"></span><span class="deco deco-4" aria-hidden="true"></span>
+  <section class="hero wrap" id="top">
+    <div class="hero-copy">
+      <p class="eyebrow">安徽大学 · 大学生创新训练计划项目</p>
+      <h1>聆脑寻音</h1>
+      <p class="hero-sub">面向跨被试场景的轻量级脑电听觉注意检测算法研究</p>
+      <p class="hero-lead">两个人同时说话，你只想听其中一个。我们想从头皮脑电里读出你正在听哪一边，每秒给出一次答案。</p>
+      <div class="hero-actions">
+        <a class="btn" href="#problem">了解项目</a>
+        <a class="btn ghost" href="member/">队员登录</a>
+      </div>
+    </div>
+
+    <figure class="demo" id="demo" aria-labelledby="demo-caption">
+      <div class="demo-stage">
+        <button type="button" class="voice voice-left" data-side="-1" aria-pressed="true">
+          <span class="voice-wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+          <span class="voice-label">左侧说话人</span>
+          <span class="voice-state">正在听</span>
+        </button>
+        <svg class="head" id="head" viewBox="-1.32 -1.38 2.64 2.72" role="img" aria-label="头顶视角的 59 个电极位置示意图"></svg>
+        <button type="button" class="voice voice-right" data-side="1" aria-pressed="false">
+          <span class="voice-wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+          <span class="voice-label">右侧说话人</span>
+          <span class="voice-state">点这里换听</span>
+        </button>
+      </div>
+      <div class="ticker" aria-hidden="true">
+        <div class="ticker-row"><span class="ticker-name">单秒判断</span><div class="ticker-cells" id="ticker-raw"></div></div>
+        <div class="ticker-row"><span class="ticker-name">累积后输出</span><div class="ticker-cells" id="ticker-out"></div></div>
+        <div class="ticker-legend"><span><i class="sw sw-left"></i>判为左</span><span><i class="sw sw-right"></i>判为右</span><span class="ticker-axis">← 过去 24 秒　现在 →</span></div>
+      </div>
+      <figcaption id="demo-caption">示意动画，不是实测数据。头部模型可以拖着转。点任意一侧说话人换听：单秒判断会抖动，累积之后稳得多，但换听后要过几秒才跟上。这对矛盾是项目后半程的主要问题。</figcaption>
+    </figure>
+  </section>
+  </div>
+
+  <section class="band" id="problem">
+    <div class="wrap">
+      <header class="sec-head">
+        <p class="sec-no">01</p>
+        <h2>助听器不知道你想听谁</h2>
+      </header>
+      <div class="prose-2col">
+        <p>在多人同时说话的地方，听力正常的人能靠注意力只听其中一个人。助听器做不到：它能降噪，却不知道佩戴者此刻想听哪一边，常常把旁边的说话声一起放大。</p>
+        <p>脑电听觉注意检测（Auditory Attention Detection，AAD）想补上这一环。它从无创的头皮脑电判断佩戴者正在关注左边还是右边的说话人，给助听器一个方向参考。</p>
+      </div>
+      <ol class="cards three" aria-label="三个难点">
+        <li class="card">
+          <h3>换一个人就变样</h3>
+          <p>每个人的脑电差别很大。新用户只能提供大约 30 秒的校准数据，而且这 30 秒往往只听了一侧，校准容易被起始方向带偏。</p>
+        </li>
+        <li class="card">
+          <h3>一秒钟的信号很吵</h3>
+          <p>只看一秒脑电，判断容易来回跳。把结果平滑一下能稳住，却会拖慢换听之后的反应。</p>
+        </li>
+        <li class="card">
+          <h3>规律不总是一致</h3>
+          <p>某个脑区或频段的左右偏侧规律，在不同记录之间不一定保持一致，方向校准缺少可靠的参照。</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="band" id="method">
+    <div class="wrap">
+      <header class="sec-head">
+        <p class="sec-no">02</p>
+        <h2>一个很小的网络，每秒回答一次</h2>
+      </header>
+      <dl class="stats">
+        <div class="stat"><dt>电极通道</dt><dd class="num">59</dd><p>26 对左右同源电极，加 7 个中线电极</p></div>
+        <div class="stat"><dt>可训练参数</dt><dd class="num">11,406</dd><p>单个模型的全部参数；三成员集成为 34,218</p></div>
+        <div class="stat"><dt>判断间隔</dt><dd class="num">1<small>秒</small></dd><p>每秒输出一次关注左侧或右侧的得分</p></div>
+        <div class="stat"><dt>处理一秒脑电</dt><dd class="num">1.46–2.50<small>毫秒</small></dd><p>单个模型在单核 CPU 上的中位耗时</p></div>
+      </dl>
+      <div class="prose-2col">
+        <p>主模型叫 PairEnergyCNN。它把电极按左右成对组织，在 4–8、8–13、13–30 Hz 三个频段上比较两侧的能量，从左右差异里读出注意方向。网络刻意做得很小，目标是能放进助听设备。</p>
+        <p>面对新用户，模型先用 30 秒不带标签的脑电做一次对齐，之后每来一秒数据都先给出判断、再更新自己的校准状态，全程只用过去的数据。</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="work">
+    <div class="wrap">
+      <header class="sec-head">
+        <p class="sec-no">03</p>
+        <h2>申报书里的四个模块，各自做到了哪一步</h2>
+        <p class="sec-note">以下数字和图取自结题归档，图下面可以展开看数据。没有带来提升的改动也照实写在这里。</p>
+      </header>
+      <ol class="modules">
+        <li class="module">
+          <p class="module-no">模块一</p>
+          <h3>左右对称的短校准</h3>
+          <p>把协方差拆成 33 路共模和 26 路差模分别对齐，想减轻 30 秒单侧校准带来的方向偏差。</p>
+          <p class="module-result">矩阵分解的中位耗时缩短了 <b class="num">40.2%</b>。跨被试准确率与常规做法持平，两种空间顺序之间的差距没有缩小。</p>
+          <div class="module-chart" data-chart="m1"></div>
+        </li>
+        <li class="module">
+          <p class="module-no">模块二</p>
+          <h3>轻量配对网络与集成</h3>
+          <p>比较单个模型和三成员集成，并试了配对排序损失、共模漂移校正两种改动。</p>
+          <p class="module-result">在视线受控的 AV-GC-AAD 上做四折跨被试测试，一秒窗口的平衡准确率为单模型平均 <b class="num">54.31%</b>、集成 <b class="num">54.92%</b>（随机水平 50%）。两种改动都没有带来整体提升，主模型保持原样。</p>
+          <div class="module-chart" data-chart="m2"></div>
+        </li>
+        <li class="module">
+          <p class="module-no">模块三</p>
+          <h3>换听时的自适应平滑</h3>
+          <p>听的人中途换边时，输出既要少抖动，又要尽快跟上。用前额 θ 和顶枕 α 的短时变化调节平滑力度。</p>
+          <p class="module-result">在自主换听数据 AASD 上，同样的误切换率下，换听延迟比固定指数平滑快 <b class="num">0.157 秒</b>。不调参数迁移到 KUL-AAD-NFB，稳态误切换从每分钟 10.75 次降到 <b class="num">3.34 次</b>。</p>
+          <div class="module-chart" data-chart="m3"></div>
+        </li>
+        <li class="module">
+          <p class="module-no">模块四</p>
+          <h3>语音辅助校准</h3>
+          <p>拿得到两路候选语音时，用脑电重建语音包络，再看它更像哪一路，以此核对方向。</p>
+          <p class="module-result">窗口越长越稳：1、5、10、30 秒的稳态平衡准确率依次为 53.03%、56.46%、59.15%、<b class="num">64.71%</b>。代价是换边后变慢，30 秒窗口在换边后头 4 秒只有 <b class="num">36.46%</b>。</p>
+          <div class="module-chart" data-chart="m4a"></div>
+          <div class="module-chart" data-chart="m4b"></div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="band" id="data">
+    <div class="wrap">
+      <header class="sec-head">
+        <p class="sec-no">04</p>
+        <h2>四套公开数据集，58 名被试</h2>
+      </header>
+      <div class="table-scroll">
+        <table class="datasets">
+          <thead><tr><th scope="col">数据集</th><th scope="col" class="r">被试</th><th scope="col">特点</th><th scope="col">在项目中的用途</th></tr></thead>
+          <tbody>
+            <tr><th scope="row"><a href="https://zenodo.org/records/11541114" target="_blank" rel="noopener noreferrer">ASA</a></th><td class="r num">16</td><td>主模型默认权重的训练数据</td><td>训练，并检验向 AV-GC-AAD 的跨数据集迁移</td></tr>
+            <tr><th scope="row"><a href="https://zenodo.org/records/11058711" target="_blank" rel="noopener noreferrer">AV-GC-AAD</a></th><td class="r num">13</td><td>视线受控的视听条件</td><td>跨被试四折验证的主要数据</td></tr>
+            <tr><th scope="row"><a href="https://zenodo.org/records/17413336" target="_blank" rel="noopener noreferrer">AASD</a></th><td class="r num">18</td><td>听者自主换听并按键标记</td><td>换听延迟与误切换；另有 10 人静默按键作动作对照</td></tr>
+            <tr><th scope="row"><a href="https://zenodo.org/records/20442638" target="_blank" rel="noopener noreferrer">KUL-AAD-NFB</a></th><td class="r num">11</td><td>每 120 或 240 秒定时换听，无按键</td><td>不调参数的跨队列迁移</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="after-table">另有两套数据集在方法冻结之前一直封存，只留给预先登记的外部复验使用。</p>
+    </div>
+  </section>
+
+  <section class="band" id="practice">
+    <div class="wrap">
+      <header class="sec-head">
+        <p class="sec-no">05</p>
+        <h2>先写下判据，再看结果</h2>
+      </header>
+      <ul class="cards two">
+        <li class="card">
+          <h3>验证之前先登记通过条件</h3>
+          <p>每个方案在跑验证之前写下准出线。没过线就记为「未得到支持」，不事后改口径。</p>
+        </li>
+        <li class="card">
+          <h3>外部数据封存到方法冻结</h3>
+          <p>留作外部复验的数据集在开发阶段不读取。冻结清单带哈希，正式运行只做一次。</p>
+        </li>
+        <li class="card">
+          <h3>同人配对，报告区间</h3>
+          <p>每项改动都和对照在同一批听者上配对比较，给出 95% 区间，不只报一个平均数。</p>
+        </li>
+        <li class="card">
+          <h3>结论可以离线复核</h3>
+          <p>结题归档附带复核脚本，用随附的权重和逐秒输入重算六项检查。</p>
+        </li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot-inner">
+    <div>
+      <p class="foot-title">“聆脑寻音”——面向跨被试场景的轻量级脑电听觉注意检测算法研究</p>
+      <p>安徽大学计算机科学与技术学院 · 大学生创新训练计划项目。团队为 2025 级本科生，依托生物信息感知与人机交互研究所开展研究。</p>
+    </div>
+    <div class="foot-side">
+      <a class="btn ghost" href="member/">队员入口</a>
+      <p class="foot-built">页面更新于 2026 年 11 月 21 日</p>
+    </div>
+  </div>
+</footer>
+
+<script type="application/json" id="chart-data">{"m1": {"kind": "bars", "title": "做一次校准分解要多久", "subtitle": "三个频带的矩阵特征分解，服务器单核中位耗时。越短越好", "unit": "微秒", "digits": 1, "max": 450, "rows": [{"label": "常规做法：59 阶整块分解", "value": 400.8, "muted": true}, {"label": "本项目：拆成 33 阶和 26 阶", "value": 239.5}], "note": "耗时缩短 40.2%。跨被试准确率两者持平（53.36% 对 53.42%）。"}, "m2": {"kind": "interval", "title": "一秒窗口的平衡准确率", "subtitle": "圆点是 13 名被试的平均，横线是 95% 区间。竖线是随机水平 50%", "unit": "%", "digits": 2, "min": 48, "max": 60, "ticks": [48, 50, 52, 54, 56, 58, 60], "reference": {"value": 50, "label": "随机"}, "rows": [{"group": "AV-GC-AAD 四折跨被试", "label": "单个模型", "value": 54.31, "low": 52.5, "high": 56.0, "muted": true}, {"group": "AV-GC-AAD 四折跨被试", "label": "三成员集成", "value": 54.92, "low": 53.03, "high": 56.63, "muted": false}, {"group": "ASA 训练，直接用到 AV-GC-AAD", "label": "单个模型", "value": 53.8, "low": 51.52, "high": 56.2, "muted": true}, {"group": "ASA 训练，直接用到 AV-GC-AAD", "label": "三成员集成", "value": 55.11, "low": 51.83, "high": 58.61, "muted": false}], "note": "区间下端都在 50% 以上，但单模型和集成的区间大幅重叠。"}, "m3": {"kind": "bars", "title": "没人换听时，输出每分钟乱跳几次", "subtitle": "KUL-AAD-NFB 上的稳态误切换，参数原样迁移。越少越好", "unit": "次/分", "digits": 2, "max": 12, "series": [{"name": "逐秒直接输出", "muted": true}, {"name": "自适应平滑", "slot": 1}], "groups": [{"label": "每 120 秒换听", "values": [10.75, 3.34]}, {"label": "每 240 秒换听", "values": [9.47, 3.22]}], "note": "同时稳态平衡准确率略有上升：61.63% → 62.32%，66.16% → 67.12%。"}, "m4a": {"kind": "line", "title": "语音窗口越长，稳态越准", "subtitle": "AV-GC-AAD，用脑电重建语音包络来判断方向。稳态平衡准确率", "x": {"label": "语音窗口长度（秒）", "tip": "{x} 秒窗口", "values": [1, 5, 10, 30], "ticks": [1, 5, 10, 30], "min": 0, "max": 32}, "y": {"unit": "%", "min": 50, "max": 66, "ticks": [50, 54, 58, 62, 66], "digits": 2}, "reference": {"value": 50, "label": "随机"}, "series": [{"name": "稳态平衡准确率", "values": [53.03, 56.46, 59.15, 64.71], "markers": true}], "labels": "all"}, "m4b": {"kind": "line", "title": "代价：换边之后要过很久才跟上", "subtitle": "AV-GC-AAD，13 名被试 86 段录音。听者在第 0 秒换边，纵轴是这一秒判对的比例", "x": {"label": "距离换边的秒数", "values": [-10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40], "ticks": [-10, 0, 10, 20, 30, 40], "min": -10, "max": 40}, "y": {"unit": "%", "min": 30, "max": 70, "ticks": [30, 40, 50, 60, 70], "digits": 1}, "reference": {"value": 50, "label": "随机"}, "marker": {"x": 0, "label": "换边"}, "series": [{"name": "只用脑电，每秒独立判断", "values": [52.7, 61.0, 52.5, 51.4, 51.4, 50.4, 49.0, 49.7, 49.1, 47.5, 49.5, 55.8, 56.6, 56.7, 52.8, 55.8, 53.3, 62.2, 56.1, 50.6, 54.6, 54.3, 53.3, 51.4, 56.3, 50.1, 53.1, 51.8, 52.4, 54.6, 53.7, 56.6, 51.8, 56.5, 60.1, 53.3, 57.8, 52.7, 51.0, 55.6, 54.7, 52.8, 53.8, 51.6, 57.1, 54.0, 51.8, 54.1, 60.5, 58.7, 52.4]}, {"name": "30 秒语音窗口", "values": [64.7, 66.7, 66.7, 62.2, 60.3, 65.4, 61.5, 61.2, 61.2, 58.3, 37.2, 35.3, 38.1, 35.3, 41.0, 45.5, 44.6, 51.3, 53.2, 53.2, 55.1, 51.3, 50.3, 44.9, 43.9, 44.9, 47.1, 48.1, 50.6, 49.4, 46.5, 45.2, 47.1, 51.0, 51.9, 50.0, 56.1, 56.1, 54.5, 59.0, 60.6, 56.7, 59.6, 64.7, 66.3, 65.4, 61.2, 58.7, 58.7, 59.9, 62.5]}], "note": "30 秒窗口里还装着换边之前的语音，所以换边后先掉到 50% 以下，窗口换满才恢复。每个点只平均了几十段录音，秒与秒之间的起伏属于噪声。"}}</script>
+<script src="assets/charts.js?v=20261121232554" defer></script>
+<script src="assets/gl.js?v=20261121232554" defer></script>
+<script src="assets/public.js?v=20261121232554" defer></script>
+</body>
+</html>
